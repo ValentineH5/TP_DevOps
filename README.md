@@ -31,3 +31,19 @@ Pour la persistance des données, on utilise un volume Docker nommé pgdata :
 créer le volume : volume create pgdata
 démarrer le conteneur : docker run -d --name db_tp1 --network app-network -v pgdata:/var/lib/postgresql/data db_tp1
 
+*1-4 Pourquoi avons-nous besoin d'une construction en plusieurs étapes? Et expliquez chaque étape de ce dossier.*
+
+Les différentes étapes permettent de séparer la compilation et l'exécution de l'application.
+
+Les différentes étapes : 
+1. Build stage :
+- utilise une image Java JDK 21 et installe Maven pour compiler le code
+- définition du répertoire de travail
+- copie les fichiers nécessaires 
+- compile l’application Spring Boot
+2. Run stage : 
+- utilise une image pour exécuter l’application
+- copie le fichier JAR généré lors de la première étape
+- lance l’application Spring Boot lorsqu'on démarre le conteneur
+
+
