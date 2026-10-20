@@ -49,3 +49,8 @@ Les différentes étapes :
 ## TP partie 02 - Github Actions
 
 *2-1 What are testcontainers?*
+
+
+*2-2 For what purpose do we need to use secured variables ?*
+
+
