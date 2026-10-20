@@ -24,6 +24,4 @@ jobs:
 
       # finally build your app with the latest command
       - name: Build and test with Maven
-        #working-directory: TD_partie_02/tp-devops-correction-docker/simple-api
-        working-directory: C:\00_Donees\0_EPF\DevOps\TP_DevOps\TD_partie_02\tp-devops-correction-docker\simple-api\pom.xml"
-        run: mvn clean verify
+        run: mvn clean verify --file TD_partie_02/tp-devops-correction-docker/simple-api/pom.xml
