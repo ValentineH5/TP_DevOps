@@ -56,4 +56,4 @@ Les différentes étapes :
 *2-3 Why did we put needs: build-and-test-backend on this job? Maybe try without this and you will see!*
 
 
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=milaepf_tp-devops -Dsonar.organization=milaepf -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SONAR_TOKEN }}  --file ./simpleapi/pom.xml
+        
