@@ -61,4 +61,13 @@ Les différentes étapes :
 
 *3-1 Document your inventory and base commands*
 
+L’inventaire setup.yml contient les informations des serveurs distants : l’adresse IP, l’utilisateur SSH et la clé privée.
+
+Les commandes principales sont :
+- ansible all -i inventories/setup.yml -m ping : vérifie la connexion au serveur.
+- ansible all -i inventories/setup.yml -m setup -a "filter=ansible_distribution*" : récupère les informations sur le système d’exploitation.
+- ansible all -i inventories/setup.yml -m apt -a "name=apache2 state=absent" --become : désinstalle Apache2.
+
+*3-2 Document your playbook*
+
 
