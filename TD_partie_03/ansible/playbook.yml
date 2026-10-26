@@ -1,7 +1,12 @@
-- name: Configure Debian servers with Docker
-  hosts: all
-  gather_facts: true
+---
+- name: Deploy application
+  hosts: prod
   become: true
+  gather_facts: true
 
   roles:
     - docker
+    - network
+    - database
+    - app
+    - proxy
