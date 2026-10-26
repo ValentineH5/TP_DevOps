@@ -57,3 +57,8 @@ Les différentes étapes :
 
 
         
+## TP part 03 - Ansible
+
+*3-1 Document your inventory and base commands*
+
+
