@@ -1,4 +1,3 @@
-
 ---
 docker_network_name: my-network
 
@@ -9,6 +8,7 @@ proxy_image: local-httpd:latest
 database_volume_name: db-volume
 
 database_port: "5432"
+app_port: "8080"
 proxy_port: "80"
 
 database_env:
