@@ -3,4 +3,4 @@
   community.docker.docker_network:
     name: "{{ docker_network_name }}"
     driver: bridge
-    state: present#SPDX-License-Identifier: MIT-0
+    state: present
