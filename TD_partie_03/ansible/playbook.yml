@@ -1,5 +1,3 @@
-
----
 - name: Configure Debian servers with Docker
   hosts: all
   gather_facts: true
