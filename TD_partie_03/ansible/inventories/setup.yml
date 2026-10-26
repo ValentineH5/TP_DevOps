@@ -2,6 +2,8 @@ all:
   vars:
     ansible_user: admin
     ansible_ssh_private_key_file: /home/valen/.ssh/id_rsa.txt
+    ansible_python_interpreter: /opt/docker_venv/bin/python
   children:
     prod:
-      hosts: valentine.hochon.takima.school
+      hosts:
+        valentine.hochon.takima.school:
