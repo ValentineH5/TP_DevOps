@@ -1,3 +1,6 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for roles/network
+- name: Create application Docker network
+  community.docker.docker_network:
+    name: "{{ docker_network_name }}"
+    driver: bridge
+    state: present#SPDX-License-Identifier: MIT-0

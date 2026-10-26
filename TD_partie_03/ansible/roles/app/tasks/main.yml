@@ -1,3 +1,25 @@
-#SPDX-License-Identifier: MIT-0
 ---
-# tasks file for roles/app
+- name: Copy API build context
+  ansible.builtin.copy:
+    src: "/mnt/c/00_Donees/0_EPF/DevOps/TP_DevOps/TD_partie_02/tp-devops-correction-docker/simple-api/"
+    dest: /opt/myapp/simple-api/
+    mode: preserve
+
+- name: Build API image
+  community.docker.docker_image:
+    name: "{{ app_image }}"
+    source: build
+    build:
+      path: /opt/myapp/simple-api
+
+- name: Start API container
+  community.docker.docker_container:
+    name: simple-api
+    image: "{{ app_image }}"
+    state: started
+    restart_policy: unless-stopped
+    env: "{{ app_env }}"
+    published_ports:
+      - "{{ app_port }}:8080"
+    networks:
+      - name: "{{ docker_network_name }}"
