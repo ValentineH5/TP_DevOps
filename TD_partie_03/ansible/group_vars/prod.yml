@@ -1,0 +1,19 @@
+
+---
+docker_network_name: my-network
+
+database_image: local-database:latest
+app_image: local-simple-api:latest
+proxy_image: local-httpd:latest
+
+database_volume_name: db-volume
+
+database_port: "5432"
+proxy_port: "80"
+
+database_env:
+  POSTGRES_PASSWORD: "{{ postgres_password }}"
+
+app_env:
+  DATABASE_HOST: "database"
+  DATABASE_PASSWORD: "{{ api_database_password }}"
