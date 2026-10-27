@@ -3,5 +3,6 @@
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/TD_partie_02/tp-devops-correction-docker" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/TD_partie_02/tp-devops-correction-docker/front" vcs="Git" />
   </component>
 </project>
