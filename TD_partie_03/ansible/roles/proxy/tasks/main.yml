@@ -1,21 +1,14 @@
 ---
-- name: Copy HTTP server build context
-  ansible.builtin.copy:
-    src: "/mnt/c/00_Donees/0_EPF/DevOps/TP_DevOps/TD_partie_02/tp-devops-correction-docker/http-server/"
-    dest: /opt/myapp/http-server/
-    mode: preserve
-
-- name: Build HTTP server image
+- name: Pull HTTP server image
   community.docker.docker_image:
     name: "{{ proxy_image }}"
-    source: build
-    build:
-      path: /opt/myapp/http-server
+    source: pull
 
 - name: Start HTTP server container
   community.docker.docker_container:
     name: httpd
     image: "{{ proxy_image }}"
+    pull: true
     state: started
     restart_policy: unless-stopped
     published_ports:
