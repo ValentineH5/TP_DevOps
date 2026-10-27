@@ -1,9 +1,9 @@
 ---
 docker_network_name: my-network
 
-database_image: local-database:latest
-app_image: local-simple-api:latest
-proxy_image: local-httpd:latest
+database_image: "{{ dockerhub_username }}/database:{{ image_tag }}"
+app_image: "{{ dockerhub_username }}/simple-api:{{ image_tag }}"
+proxy_image: "{{ dockerhub_username }}/http-server:{{ image_tag }}"
 
 database_volume_name: db-volume
 
