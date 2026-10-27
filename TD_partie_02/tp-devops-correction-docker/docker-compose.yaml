@@ -26,6 +26,11 @@ services:
     networks:
       - my-network
 
+  front:
+    build: "front"
+    networks:
+      - my-network
+
 networks:
   my-network:
 
