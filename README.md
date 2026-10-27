@@ -70,4 +70,7 @@ Les commandes principales sont :
 
 *3-2 Document your playbook*
 
+Le playbook permet d'automatiser les tâches à effectuer sur un serveur. Les tâches sont définies dedans en yaml.
+Il permet de tester la connexion, installer Docker et démarrer son service. On utilise des rôles pour mieux organiser et réutiliser ces tâches.
+Pour exécuter le playbook, on utilise la commande : ansible-playbook -i inventories/setup.yml playbook.yml
 
