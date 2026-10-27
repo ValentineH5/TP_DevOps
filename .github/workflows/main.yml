@@ -1,78 +1,102 @@
-name: CI devops 2025
+
+name: Build and deploy application
 
 on:
-  # Pour lancer ce job sur les branches main et develop
   push:
     branches:
       - main
-      - develop
-  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  test-backend:
-    runs-on: ubuntu-24.04
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
     steps:
-      # Checkout your github code using actions/checkout@v4
-      - uses: actions/checkout@v4
-
-      # Set up JDK 21
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-
-      # Build and test with Maven
-      - name: Build and test with Maven
-        run: mvn clean verify --file TD_partie_02/tp-devops-correction-docker/simple-api/pom.xml
-
-  # Define job to build and publish docker image
-  build-and-push-docker-image:
-    needs: test-backend
-    # Run only when code is compiling and tests are passing
-    runs-on: ubuntu-24.04
-
-    # Steps to perform in job
-    steps:
-      - name: Checkout code
+      # Checkout du code source
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Connexion à Docker Hub avec les secrets
+      # Configuration de Docker Buildx
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Connexion à Docker Hub
       - name: Login to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login --username ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build image and push backend
+      # Build et publication de l'image database
+      - name: Build and push database
         uses: docker/build-push-action@v6
         with:
-          # Relative path to the place where source code with Dockerfile is located
-          context: TD_partie_02/tp-devops-correction-docker/simple-api
-          # Note: tags has to be all lower-case
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:latest
-          push: ${{ github.ref == 'refs/heads/main' }}
+          context: ./TD_partie_02/tp-devops-correction-docker/database
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:${{ github.sha }}
 
-      - name: Build image and push database
+      # Build et publication de l'image simple-api
+      - name: Build and push API
         uses: docker/build-push-action@v6
         with:
-          context: TD_partie_02/tp-devops-correction-docker/database
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-database:latest
-          push: ${{ github.ref == 'refs/heads/main' }}
+          context: ./TD_partie_02/tp-devops-correction-docker/simple-api
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-simple-api:${{ github.sha }}
 
-      - name: Build image and push httpd
+      # Build et publication de l'image http-server
+      - name: Build and push HTTP server
         uses: docker/build-push-action@v6
         with:
-          context: TD_partie_02/tp-devops-correction-docker/http-server
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http-server:latest
-          push: ${{ github.ref == 'refs/heads/main' }}
+          context: ./TD_partie_02/tp-devops-correction-docker/http-server
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-http-server:${{ github.sha }}
 
-      # Set up JDK 21
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
+      # Installation de Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          python-version: '3.x'
 
-      #Analyse SonarCloud
-      - name: SonarCloud Scan
+      # Installation d'Ansible
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install ansible
+
+      # Installation de la collection Docker pour Ansible
+      - name: Install Docker collection
+        run: ansible-galaxy collection install community.docker
+
+      # Configuration de la clé SSH de déploiement
+      - name: Configure SSH
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Nécessaire pour analyser les PR
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=ValentineH5_TP_DevOps -Dsonar.organization=valentineh5 -Dsonar.host.url=https://sonarcloud.io -Dsonar.token=${{ secrets.SONAR_TOKEN }} --file TD_partie_02/tp-devops-correction-docker/simple-api/pom.xml
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      # Déploiement avec Ansible
+      - name: Deploy with Ansible
+        env:
+          ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+        run: |
+          cd TD_partie_03/ansible
+
+          printf '%s\n' "$ANSIBLE_VAULT_PASSWORD" > "$RUNNER_TEMP/vault-password"
+          chmod 600 "$RUNNER_TEMP/vault-password"
+
+          ansible-playbook \
+            -i inventories/setup.yml \
+            playbook.yml \
+            --private-key "$HOME/.ssh/deploy_key" \
+            --extra-vars "dockerhub_username=$DOCKERHUB_USERNAME image_tag=$GITHUB_SHA" \
+            --vault-password-file "$RUNNER_TEMP/vault-password"
