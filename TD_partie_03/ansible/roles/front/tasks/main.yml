@@ -1,0 +1,15 @@
+---
+- name: Pull front image
+  community.docker.docker_image:
+    name: "{{ front_image }}"
+    source: pull
+
+- name: Start front container
+  community.docker.docker_container:
+    name: front
+    image: "{{ front_image }}"
+    pull: true
+    state: started
+    restart_policy: unless-stopped
+    networks:
+      - name: "{{ docker_network_name }}"

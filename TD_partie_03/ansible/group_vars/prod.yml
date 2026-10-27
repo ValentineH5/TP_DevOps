@@ -4,12 +4,14 @@ docker_network_name: my-network
 database_image: "{{ dockerhub_username }}/database:{{ image_tag }}"
 app_image: "{{ dockerhub_username }}/simple-api:{{ image_tag }}"
 proxy_image: "{{ dockerhub_username }}/http-server:{{ image_tag }}"
+front_image: "{{ dockerhub_username }}/tp-devops-front:{{ image_tag }}"
 
 database_volume_name: db-volume
 
 database_port: "5432"
 app_port: "8080"
 proxy_port: "80"
+front_port: "8081"
 
 database_env:
   POSTGRES_PASSWORD: "{{ postgres_password }}"

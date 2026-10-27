@@ -110,3 +110,10 @@ jobs:
             --private-key "$HOME/.ssh/deploy_key" \
             --extra-vars "dockerhub_username=$DOCKERHUB_USERNAME image_tag=$GITHUB_SHA" \
             --vault-password-file "$RUNNER_TEMP/vault-password"
+
+      - name: Build and push Front
+        uses: docker/build-push-action@v6
+        with:
+          context: ./TD_partie_02/tp-devops-correction-docker/front
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/tp-devops-front:${{ github.sha }}
