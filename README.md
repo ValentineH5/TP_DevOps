@@ -46,6 +46,53 @@ Les différentes étapes :
 - copie le fichier JAR généré lors de la première étape
 - lance l’application Spring Boot lorsqu'on démarre le conteneur
 
+## 1-5. Pourquoi utiliser un reverse proxy ?
+
+Un reverse proxy reçoit les requêtes des utilisateurs et les transmet au backend. Il permet de centraliser les accès, de sécuriser l’application et de faciliter la gestion du trafic.
+
+## 1-6. Pourquoi Docker Compose est-il important ?
+
+Docker Compose permet de gérer plusieurs conteneurs avec un seul fichier. Il facilite leur création, leur configuration, leur démarrage et leur arrêt.
+
+## 1-7. Document your docker-compose most important commands
+
+- docker compose up -d : démarre les services en arrière-plan.
+- docker compose down : arrête et supprime les conteneurs et réseaux créés.
+- docker compose build : construit les images.
+- docker compose ps : affiche l’état des services.
+- docker compose logs : affiche les logs.
+- docker compose restart : redémarre les services.
+
+## 1-8. Document your docker-compose file
+
+Le fichier docker-compose.yml définit les trois services de l’application :
+
+- Database : héberge la base PostgreSQL et utilise un volume pour conserver les données.
+- Backend : exécute l’API Java et communique avec la base de données sur le réseau Docker.
+- HTTPD : sert de reverse proxy et expose l’application sur le port 80.
+
+Les directives : 
+- build : construire les images
+- networks : connecter les services
+- depends_on : définir leurs dépendances
+- ports : exposer les ports
+- volumes : conserver les données
+
+## 1-9. Document your publication commands and published images in Docker Hub
+
+Les commandes principales sont :
+
+- docker login : se connecte à Docker Hub.
+- docker tag my-database USERNAME/my-database:1.0 : ajoute un nom et une version à l’image.
+- docker push USERNAME/my-database:1.0 : publie l’image sur Docker Hub.
+
+Les images publiées peuvent être consultées dans le Docker Hub.
+
+## 1-10. Pourquoi publier les images sur un dépôt en ligne ?
+
+Un dépôt en ligne permet de partager les images Docker, de les récupérer sur d’autres machines et de faciliter le déploiement de l’application. Il permet également de conserver différentes versions des images.
+
+
 ## TP partie 02 - Github Actions
 
 *2-1 What are testcontainers?*
