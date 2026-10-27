@@ -46,15 +46,15 @@ Les différentes étapes :
 - copie le fichier JAR généré lors de la première étape
 - lance l’application Spring Boot lorsqu'on démarre le conteneur
 
-### 1-5. Pourquoi utiliser un reverse proxy ?
+### 1-5 Pourquoi utiliser un reverse proxy ?
 
 Un reverse proxy reçoit les requêtes des utilisateurs et les transmet au backend. Il permet de centraliser les accès, de sécuriser l’application et de faciliter la gestion du trafic.
 
-### 1-6. Pourquoi Docker Compose est-il important ?
+### 1-6 Pourquoi Docker Compose est-il important ?
 
 Docker Compose permet de gérer plusieurs conteneurs avec un seul fichier. Il facilite leur création, leur configuration, leur démarrage et leur arrêt.
 
-### 1-7. Document your docker-compose most important commands
+### 1-7 Document your docker-compose most important commands
 
 - docker compose up -d : démarre les services en arrière-plan.
 - docker compose down : arrête et supprime les conteneurs et réseaux créés.
@@ -63,7 +63,7 @@ Docker Compose permet de gérer plusieurs conteneurs avec un seul fichier. Il fa
 - docker compose logs : affiche les logs.
 - docker compose restart : redémarre les services.
 
-### 1-8. Document your docker-compose file
+### 1-8 Document your docker-compose file
 
 Le fichier docker-compose.yml définit les trois services de l’application :
 
@@ -78,7 +78,7 @@ Les directives :
 - ports : exposer les ports
 - volumes : conserver les données
 
-### 1-9. Document your publication commands and published images in Docker Hub
+### 1-9 Document your publication commands and published images in Docker Hub
 
 Les commandes principales sont :
 
@@ -88,7 +88,7 @@ Les commandes principales sont :
 
 Les images publiées peuvent être consultées dans le Docker Hub.
 
-### 1-10. Pourquoi publier les images sur un dépôt en ligne ?
+### 1-10 Pourquoi publier les images sur un dépôt en ligne ?
 
 Un dépôt en ligne permet de partager les images Docker, de les récupérer sur d’autres machines et de faciliter le déploiement de l’application. Il permet également de conserver différentes versions des images.
 
@@ -107,7 +107,7 @@ Les variables sécurisées permettent de stocker les informations sensibles, com
 
 needs: test-backend permet de lancer la construction des images Docker uniquement si les tests du backend ont réussi. Cela évite de publier une application qui ne fonctionne pas.
 
-### 2-4. For what purpose do we need to push Docker images?
+### 2-4 For what purpose do we need to push Docker images?
 
 Le push permet d’envoyer les images Docker sur Docker Hub afin de pouvoir les récupérer et les déployer sur un serveur.
 
@@ -129,3 +129,22 @@ Le playbook permet d'automatiser les tâches à effectuer sur un serveur. Les t�
 Il permet de tester la connexion, installer Docker et démarrer son service. On utilise des rôles pour mieux organiser et réutiliser ces tâches.
 Pour exécuter le playbook, on utilise la commande : ansible-playbook -i inventories/setup.yml playbook.yml
 
+### 3-3 Document your docker_container tasks configuration
+
+On crée les tasks suivants :
+- docker : installe Docker sur le serveur.
+- network : crée le réseau Docker.
+- database : démarre le conteneur de base de données avec ses variables d’environnement.
+- app : démarre l’application et configure sa connexion à la base de données.
+- proxy : démarre le proxy HTTPD pour rendre l’application accessible.
+
+### 3-4 Is it really safe to deploy automatically every new image on the hub? Explain. What can I do to make it more secure?
+
+Non, ce n’est pas totalement sûr. Une nouvelle image peut contenir des bugs ou des failles de sécurité.
+
+Pour sécuriser le déploiement, il faut :
+- Exécuter des tests automatiques avant le déploiement.
+- Scanner les images pour détecter les vulnérabilités.
+- Utiliser des versions précises des images plutôt que le tag latest.
+- Protéger les secrets avec GitHub Secrets ou Ansible Vault.
+- Prévoir un moyen de revenir à une version précédente en cas de problème.
