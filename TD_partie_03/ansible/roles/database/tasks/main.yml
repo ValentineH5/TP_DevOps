@@ -1,16 +1,8 @@
 ---
-- name: Copy database build context
-  ansible.builtin.copy:
-    src: "/mnt/c/00_Donees/0_EPF/DevOps/TP_DevOps/TD_partie_02/tp-devops-correction-docker/database/"
-    dest: /opt/myapp/database/
-    mode: preserve
-
-- name: Build database image
+- name: Pull database image
   community.docker.docker_image:
     name: "{{ database_image }}"
-    source: build
-    build:
-      path: /opt/myapp/database
+    source: pull
 
 - name: Create database volume
   community.docker.docker_volume:
@@ -21,6 +13,7 @@
   community.docker.docker_container:
     name: database
     image: "{{ database_image }}"
+    pull: true
     state: started
     restart_policy: unless-stopped
     env: "{{ database_env }}"
