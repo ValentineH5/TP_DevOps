@@ -1,16 +1,16 @@
 ---
 - name: Pull front image
   community.docker.docker_image:
-    name: "{{ dockerhub_username }}/tp-devops-front:{{ image_tag }}"
+    name: "{{ dockerhub_username }}/tp-devops-front"
+    tag: "{{ image_tag }}"
     source: pull
 
 - name: Start front container
   community.docker.docker_container:
     name: front
     image: "{{ dockerhub_username }}/tp-devops-front:{{ image_tag }}"
+    pull: true
     state: started
-    restart_policy: always
+    restart_policy: unless-stopped
     networks:
-      - name: app-network
-    ports:
-      - "80:80"
+      - name: "{{ docker_network_name }}"
