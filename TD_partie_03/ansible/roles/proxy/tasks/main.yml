@@ -1,13 +1,14 @@
 ---
 - name: Pull HTTP server image
   community.docker.docker_image:
-    name: "{{ proxy_image }}"
+    name: "{{ dockerhub_username }}/tp-devops-http-server"
+    tag: "{{ image_tag }}"
     source: pull
 
 - name: Start HTTP server container
   community.docker.docker_container:
     name: httpd
-    image: "{{ proxy_image }}"
+    image: "{{ dockerhub_username }}/tp-devops-http-server:{{ image_tag }}"
     pull: true
     state: started
     restart_policy: unless-stopped

@@ -1,13 +1,14 @@
 ---
 - name: Pull API image
   community.docker.docker_image:
-    name: "{{ app_image }}"
+    name: "{{ dockerhub_username }}/tp-devops-simple-api"
+    tag: "{{ image_tag }}"
     source: pull
 
 - name: Start API container
   community.docker.docker_container:
     name: simple-api
-    image: "{{ app_image }}"
+    image: "{{ dockerhub_username }}/tp-devops-simple-api:{{ image_tag }}"
     pull: true
     state: started
     restart_policy: unless-stopped

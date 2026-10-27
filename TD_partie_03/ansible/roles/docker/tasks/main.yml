@@ -1,3 +1,4 @@
+---
 - name: Install required packages
   ansible.builtin.apt:
     name:
@@ -28,11 +29,26 @@
   changed_when: false
 
 - name: Add Docker repository
-  ansible.builtin.apt_repository:
-    repo: "deb [arch={{ docker_arch.stdout }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/debian {{ ansible_facts['distribution_release'] }} stable"
-    filename: docker
+  ansible.builtin.deb822_repository:
+    name: docker
+    types:
+      - deb
+    uris:
+      - https://download.docker.com/linux/debian
+    suites:
+      - "{{ ansible_facts['distribution_release'] }}"
+    components:
+      - stable
+    architectures:
+      - "{{ docker_arch.stdout }}"
+    signed_by: /etc/apt/keyrings/docker.asc
     state: present
+  register: docker_repository
+
+- name: Update APT cache after repository change
+  ansible.builtin.apt:
     update_cache: true
+  when: docker_repository.changed
 
 - name: Install Docker Engine and plugins
   ansible.builtin.apt:

@@ -1,7 +1,8 @@
 ---
 - name: Pull database image
   community.docker.docker_image:
-    name: "{{ database_image }}"
+    name: "{{ dockerhub_username }}/tp-devops-database"
+    tag: "{{ image_tag }}"
     source: pull
 
 - name: Create database volume
@@ -12,7 +13,7 @@
 - name: Start PostgreSQL container
   community.docker.docker_container:
     name: database
-    image: "{{ database_image }}"
+    image: "{{ dockerhub_username }}/tp-devops-database:{{ image_tag }}"
     pull: true
     state: started
     restart_policy: unless-stopped
